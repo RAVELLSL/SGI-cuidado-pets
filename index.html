@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicativo de controle de cuidados com pets, registro de vacinas, consultas, alertas, rotinas e monitoramento de estoque.">
+  <title>Controle de Cuidados com Pets</title>
+  <link rel="icon" href="favicon.ico">
+  <!-- Fonte Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    /* Reset e configurações gerais */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .form-section,
+    .table-section {
+      padding: 30px;
+    }
+    .form-section {
+      flex: 1;
+      background-color: #f9fafb;
+      border-right: 1px solid #eaeaea;
+    }
+    .table-section {
+      flex: 1;
+      overflow-x: auto;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2em;
+      color: #2c3e50;
+    }
+    h3 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      color: #2c3e50;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 5px;
+    }
+    fieldset {
+      border: none;
+      margin-bottom: 20px;
+    }
+    legend {
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: block;
+      color: #34495e;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+    input:focus, select:focus {
+      border-color: #28a745;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #28a745;
+      color: #fff;
+      font-size: 1em;
+      font-weight: 500;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: #218838;
+      transform: scale(1.02);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: #fff;
+    }
+    table th, table td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #e0e0e0;
+    }
+    table th {
+      background: #28a745;
+      color: #fff;
+      font-weight: 500;
+    }
+    table tbody tr:nth-child(even) {
+      background: #f2f2f2;
+    }
+    table tbody tr:hover {
+      background: #e8f5e9;
+    }
+    .delete-btn {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .delete-btn:hover {
+      background: #c82333;
+      transform: scale(1.05);
+    }
+    .icon {
+      margin-right: 8px;
+      color: #28a745;
+    }
+    /* Otimizações para telas menores */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .form-section, .table-section {
+        max-width: 100%;
+        border-right: none;
+        padding: 20px;
+      }
+    }
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.8em;
+      }
+      h3 {
+        font-size: 1.3em;
+      }
+      .input-group label {
+        font-size: 0.9em;
+      }
+      input, select, button {
+        font-size: 0.9em;
+        padding: 10px;
+      }
+      table th, table td {
+        font-size: 0.8em;
+        padding: 8px;
+      }
+      .delete-btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Seção de Formulários -->
+    <section class="form-section">
+      <h2><i class="fas fa-paw"></i> Controle de Cuidados com Pets</h2>
+      
+      <!-- Registro de Vacinas e Consultas -->
+      <form id="record-form">
+        <fieldset>
+          <legend><h3><i class="fas fa-syringe icon"></i> Registro de Vacinas e Consultas</h3></legend>
+          <div class="input-group">
+            <label for="pet-name">Nome do Pet:</label>
+            <input type="text" id="pet-name" name="pet-name">
+          </div>
+          <div class="input-group">
+            <label for="pet-care">Vacina/Consulta:</label>
+            <input type="text" id="pet-care" name="pet-care">
+          </div>
+          <div class="input-group">
+            <label for="pet-date">Data:</label>
+            <input type="date" id="pet-date" name="pet-date">
+          </div>
+          <button type="button" id="add-record-btn">Adicionar</button>
+        </fieldset>
+      </form>
+      
+      <!-- Alertas para Medicamentos e Alimentação -->
+      <form id="alert-form">
+        <fieldset>
+          <legend><h3><i class="fas fa-bell icon"></i> Alertas para Medicamentos e Alimentação</h3></legend>
+          <div class="input-group">
+            <label for="alert-desc">Descrição:</label>
+            <input type="text" id="alert-desc" name="alert-desc">
+          </div>
+          <div class="input-group">
+            <label for="alert-time">Horário:</label>
+            <input type="time" id="alert-time" name="alert-time">
+          </div>
+          <button type="button" id="add-alert-btn">Adicionar Alerta</button>
+        </fieldset>
+      </form>
+      
+      <!-- Cadastro de Rotinas -->
+      <form id="routine-form">
+        <fieldset>
+          <legend><h3><i class="fas fa-walking icon"></i> Cadastro de Rotinas</h3></legend>
+          <div class="input-group">
+            <label for="routine-type">Tipo de Rotina:</label>
+            <select id="routine-type" name="routine-type">
+              <option value="Passeio">Passeio</option>
+              <option value="Brincadeira">Brincadeira</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="routine-time">Horário:</label>
+            <input type="time" id="routine-time" name="routine-time">
+          </div>
+          <button type="button" id="add-routine-btn">Adicionar Rotina</button>
+        </fieldset>
+      </form>
+      
+      <!-- Monitoramento de Estoque -->
+      <form id="stock-form">
+        <fieldset>
+          <legend><h3><i class="fas fa-boxes icon"></i> Monitoramento de Estoque</h3></legend>
+          <div class="input-group">
+            <label for="stock-item">Item:</label>
+            <input type="text" id="stock-item" name="stock-item">
+          </div>
+          <div class="input-group">
+            <label for="stock-qty">Quantidade:</label>
+            <input type="number" id="stock-qty" name="stock-qty" min="0">
+          </div>
+          <button type="button" id="add-stock-btn">Adicionar Estoque</button>
+        </fieldset>
+      </form>
+    </section>
+    
+    <!-- Seção de Tabelas -->
+    <section class="table-section">
+      <h3>Registros</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Data</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="record-table"></tbody>
+      </table>
+      
+      <h3>Alertas</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Horário</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="alert-table"></tbody>
+      </table>
+      
+      <h3>Rotinas</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Horário</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="routine-table"></tbody>
+      </table>
+      
+      <h3>Estoque</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantidade</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="stock-table"></tbody>
+      </table>
+    </section>
+  </div>
+  
+  <script>
+    // Função para adicionar uma nova linha na tabela com os valores e botão de exclusão
+    function addItem(tableId, values) {
+      const tableBody = document.getElementById(tableId);
+      const row = tableBody.insertRow();
+      values.forEach(value => {
+        const cell = row.insertCell();
+        cell.textContent = value;
+      });
+      // Cria célula para ação de exclusão
+      const actionCell = row.insertCell();
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "X";
+      deleteButton.classList.add("delete-btn");
+      deleteButton.addEventListener("click", function() {
+        row.remove();
+      });
+      actionCell.appendChild(deleteButton);
+    }
+  
+    // Função para limpar os campos do formulário
+    function clearForm(formElement) {
+      formElement.reset();
+    }
+  
+    // Eventos após o carregamento do DOM
+    document.addEventListener("DOMContentLoaded", function() {
+      // Registro de Vacinas e Consultas
+      document.getElementById("add-record-btn").addEventListener("click", function() {
+        const petName = document.getElementById("pet-name").value.trim();
+        const petCare = document.getElementById("pet-care").value.trim();
+        const petDate = document.getElementById("pet-date").value;
+        if (petName === "" || petCare === "" || petDate === "") {
+          alert("Por favor, preencha todos os campos do registro.");
+          return;
+        }
+        addItem("record-table", [petName, petCare, petDate]);
+        clearForm(document.getElementById("record-form"));
+      });
+  
+      // Alertas para Medicamentos e Alimentação
+      document.getElementById("add-alert-btn").addEventListener("click", function() {
+        const alertDesc = document.getElementById("alert-desc").value.trim();
+        const alertTime = document.getElementById("alert-time").value;
+        if (alertDesc === "" || alertTime === "") {
+          alert("Por favor, preencha todos os campos do alerta.");
+          return;
+        }
+        addItem("alert-table", [alertDesc, alertTime]);
+        clearForm(document.getElementById("alert-form"));
+      });
+  
+      // Cadastro de Rotinas
+      document.getElementById("add-routine-btn").addEventListener("click", function() {
+        const routineType = document.getElementById("routine-type").value;
+        const routineTime = document.getElementById("routine-time").value;
+        if (routineType === "" || routineTime === "") {
+          alert("Por favor, preencha todos os campos da rotina.");
+          return;
+        }
+        addItem("routine-table", [routineType, routineTime]);
+        clearForm(document.getElementById("routine-form"));
+      });
+  
+      // Monitoramento de Estoque
+      document.getElementById("add-stock-btn").addEventListener("click", function() {
+        const stockItem = document.getElementById("stock-item").value.trim();
+        const stockQty = document.getElementById("stock-qty").value;
+        if (stockItem === "" || stockQty === "") {
+          alert("Por favor, preencha todos os campos do estoque.");
+          return;
+        }
+        addItem("stock-table", [stockItem, stockQty]);
+        clearForm(document.getElementById("stock-form"));
+      });
+    });
+  </script>
+</body>
+</html>
